@@ -523,12 +523,12 @@ int main(void) {
                                        .test_images = test_images,
                                        .test_labels = test_labels,
 
-                                       .epochs = 3,
+                                       .epochs = 5,
                                        .batch_size = 20,
                                        .learning_rate = 0.005};
   model_train(model, &training_desc);
 
-  memcpy(model->input->val->data, train_images->data + (1 * 78), sizeof(float) * 784);
+  memcpy(model->input->val->data, train_images->data + (1 * 784), sizeof(float) * 784);
 
   model_feedforward(model);
 
