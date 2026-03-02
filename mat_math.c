@@ -511,6 +511,7 @@ int main(void) {
   memcpy(model->input->val->data, train_images->data, sizeof(float) * 784);
   model_feedforward(model);
 
+  _draw_mnist_digit(train_images->data + 0 * 784);
   printf("pre training output: \n");
   for (unsigned int i = 0; i < 10; i++) {
     printf("%f ", model->output->val->data[i]);
@@ -527,13 +528,13 @@ int main(void) {
                                        .learning_rate = 0.005};
   model_train(model, &training_desc);
 
-  memcpy(model->input->val->data, train_images->data, sizeof(float) * 784);
+  memcpy(model->input->val->data, train_images->data + (1 * 78), sizeof(float) * 784);
 
   model_feedforward(model);
 
   printf("post training output: \n");
 
-  _draw_mnist_digit(train_images->data + 0 * 784);
+  _draw_mnist_digit(train_images->data + 1 * 784);
   for (unsigned int i = 0; i < 10; i++) {
     printf("%f ", model->output->val->data[i]);
   }
