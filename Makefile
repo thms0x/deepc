@@ -1,25 +1,33 @@
 # --- Setup ---
 CC = gcc
-CFLAGS = -O3 -Wall -Wextra -std=c11
+CFLAGS = -O3 -Wall -Wextra -std=c11 -I./include
 LDFLAGS = -lm
 
+# --- Directories ---
+SRC_DIR = src
+INC_DIR = include
+BUILD_DIR = build
+
+# --- Files ---
 TARGET = mnist_trainer.out
 
-SRCS = main.c matrix.c model.c
+SRCS = $(wildcard $(SRC_DIR)/*.c)
 
-OBJS = $(SRCS:.c=.o)
+OBJS = $(patsubst $(SRC_DIR)/%.c, $(BUILD_DIR)/%.o, $(SRCS))
 
-DEPS = matrix.h model.h
+# --- Rules ---
+all: $(BUILD_DIR) $(TARGET)
 
-all: $(TARGET)
+$(BUILD_DIR):
+	mkdir -p $(BUILD_DIR)
 
 $(TARGET): $(OBJS)
-	$(CC) $(CFLAGS) -o $(TARGET) $(OBJS) $(LDFLAGS)
+	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS)
 
-%.o: %.c $(DEPS)
+$(BUILD_DIR)/%.o: $(SRC_DIR)/%.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-	rm -f $(OBJS) $(TARGET)
+	rm -rf $(BUILD_DIR) $(TARGET)
 
 .PHONY: all clean
