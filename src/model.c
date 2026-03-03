@@ -64,7 +64,7 @@ model_var *_mv_binary_impl(model_context *model, model_var *a, model_var *b,
   return out;
 }
 
-model_var *mv_relu(model_context *model, model_var *input, unsigned int flags) {
+model_var* mv_relu(model_context *model, model_var *input, unsigned int flags) {
   return _mv_unary_impl(model, input, flags, input->val->rows, input->val->cols,
                         MV_OP_RELU);
 }

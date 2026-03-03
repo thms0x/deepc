@@ -1,7 +1,7 @@
 #include "matrix.h"
 #include "model.h"
 #include <stdio.h>
-#include <math.h>
+#include <layer.h>
 #include <string.h>
 
 void _draw_mnist_digit(float *data) {
@@ -16,43 +16,15 @@ void _draw_mnist_digit(float *data) {
   printf("\x1b[0m");
 }
 
-void create_mnist_model(model_context *model) {
+
+void create_mnist_model_test(model_context *model) {
   model_var *input = mv_create(model, 784, 1, MV_FLAG_INPUT);
-  model_var *w0 =
-      mv_create(model, 16, 784, MV_FLAG_REQUIRES_GRAD | MV_FLAG_PARAMETER);
-  model_var *w1 =
-      mv_create(model, 16, 16, MV_FLAG_REQUIRES_GRAD | MV_FLAG_PARAMETER);
-  model_var *w2 =
-      mv_create(model, 10, 16, MV_FLAG_REQUIRES_GRAD | MV_FLAG_PARAMETER);
-
-  float bound0 = sqrtf(6.0f / (784 + 16));
-  float bound1 = sqrtf(6.0f / (16 + 16));
-  float bound2 = sqrtf(6.0f / (16 + 10));
-
-  mat_fill_rand(w0->val, -bound0, bound0);
-  mat_fill_rand(w1->val, -bound1, bound1);
-  mat_fill_rand(w2->val, -bound2, bound2);
-
-  model_var *b0 =
-      mv_create(model, 16, 1, MV_FLAG_REQUIRES_GRAD | MV_FLAG_PARAMETER);
-  model_var *b1 =
-      mv_create(model, 16, 1, MV_FLAG_REQUIRES_GRAD | MV_FLAG_PARAMETER);
-  model_var *b2 =
-      mv_create(model, 10, 1, MV_FLAG_REQUIRES_GRAD | MV_FLAG_PARAMETER);
-
-  model_var *z0_a = mv_matmul(model, w0, input, 0);
-  model_var *z0_b = mv_add(model, z0_a, b0, 0);
-  model_var *a0 = mv_relu(model, z0_b, 0);
-
-  model_var *z1_a = mv_matmul(model, w1, a0, 0);
-  model_var *z1_b = mv_add(model, z1_a, b1, 0);
-  model_var *z1_c = mv_relu(model, z1_b, 0);
-  model_var *a1 = mv_add(model, z1_c, a0, 0);
-
-  model_var *z2_a = mv_matmul(model, w2, a1, 0);
-  model_var *z2_b = mv_add(model, z2_a, b2, 0);
-  model_var *output = mv_softmax(model, z2_b, MV_FLAG_OUTPUT);
-
+  model_var *z0 = layer_fully_connected(model, input, 784, 128);
+  model_var *a0 = mv_relu(model, z0, 0);
+  model_var *z1 = layer_fully_connected(model, a0, 128, 64);
+  model_var *a1 = mv_relu(model, z1, 0);
+  model_var *z2 = layer_fully_connected(model, a1, 64, 10);
+  model_var *output = mv_softmax(model, z2, MV_FLAG_OUTPUT);
   model_var *y = mv_create(model, 10, 1, MV_FLAG_DESIRED_OUPUT);
   model_var *cost = mv_cross_entropy(model, output, y, MV_FLAG_COST);
 }
@@ -82,7 +54,7 @@ int main(void) {
     printf("%.0f", train_labels->data[2 * 10 + i]);
 
   model_context *model = model_create();
-  create_mnist_model(model);
+  create_mnist_model_test(model);
   model_compile(model);
 
   memcpy(model->input->val->data, train_images->data, sizeof(float) * 784);
