@@ -1,7 +1,7 @@
 #include "matrix.h"
 #include "model.h"
-#include <stdio.h>
 #include <layer.h>
+#include <stdio.h>
 #include <string.h>
 
 void _draw_mnist_digit(float *data) {
@@ -15,7 +15,6 @@ void _draw_mnist_digit(float *data) {
   }
   printf("\x1b[0m");
 }
-
 
 void create_mnist_model_test(model_context *model) {
   model_var *input = mv_create(model, 784, 1, MV_FLAG_INPUT);
@@ -72,21 +71,35 @@ int main(void) {
                                        .test_images = test_images,
                                        .test_labels = test_labels,
 
-                                       .epochs = 5,
+                                       .epochs = 1,
                                        .batch_size = 20,
-                                       .learning_rate = 0.005};
+                                       .learning_rate = 0.01};
   model_train(model, &training_desc);
-
-  memcpy(model->input->val->data, test_images->data + (2 * 784), sizeof(float) * 784);
-
-  model_feedforward(model);
-
+  int right_predictions = 0;
+  int wrong_predictions = 0;
+  int accuracy = 0;
   printf("post training output: \n");
 
-  _draw_mnist_digit(test_images->data + 2 * 784);
-  for (unsigned int i = 0; i < 10; i++) {
-    printf("%f ", model->output->val->data[i]);
+  for (unsigned int i = 0; i < 10000; i++) {
+    memcpy(model->input->val->data, test_images->data + (i * 784),
+           sizeof(float) * 784);
+
+    model_feedforward(model);
+
+    // _draw_mnist_digit(test_images->data + i * 784);
+    if (test_labels->data[i * 10 + mat_argmax(model->output->val)] == 1.0f )
+           right_predictions++;
+    else{
+      wrong_predictions++;
+    }
   }
-  printf("\n");
+  printf("Right predictions: %d, Wrong predictions: %d, Accuracy: %.2f%%\n",
+         right_predictions, wrong_predictions,
+         (float)right_predictions / (float)(right_predictions + wrong_predictions) * 100.0f);
+
+  mat_free(train_images);
+  mat_free(test_images);
+  mat_free(train_labels);
+  mat_free(test_labels);
   return 0;
 }

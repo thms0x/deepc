@@ -309,3 +309,8 @@ int mat_cross_entropy_add_grad(matrix *p_grad, matrix *q_grad,
 
   return 1;
 }
+
+void mat_free(matrix *m){
+    free(m->data);
+    free(m);
+}

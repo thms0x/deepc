@@ -30,5 +30,6 @@ int mat_relu_add_grad(matrix *out, const matrix *in, const matrix *grad);
 int mat_softmax_add_grad(matrix *out, const matrix *in, const matrix *grad);
 int mat_cross_entropy_add_grad(matrix *p_grad, matrix *q_grad, const matrix *predictions,
                                const matrix *labels, const matrix *grad);
+void mat_free(matrix *m);
 
 #endif

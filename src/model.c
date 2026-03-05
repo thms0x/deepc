@@ -156,6 +156,8 @@ model_program model_prog_create(model_context *model, model_var *out_var) {
       stack[stack_size++] = input;
     }
   }
+  free(visited);
+  free(stack);
 
   model_program prog = {.size = out_size, .vars = out};
   return prog;
