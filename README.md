@@ -5,7 +5,7 @@
 ## Credits
 
 This project is based on the following video tutorial:
-- [Deep Learning in C - Part 1 (Neural Network from Scratch)](https://www.youtube.com/watch?v=hL_n_GljC0I&t=1s)
+- [Coding a machine learning library in C from scratch](https://www.youtube.com/watch?v=hL_n_GljC0I&t=1s)
 
 The framework features a custom matrix library, a modular computation graph system, and an example implementation for training an MNIST digit classifier.
 
