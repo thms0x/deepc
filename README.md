@@ -2,6 +2,11 @@
 
 `deepc` is a lightweight, graph-based deep learning framework implemented in C. It is designed to be simple, educational, and dependency-free (relying only on the standard C library and math functions).
 
+## Credits
+
+This project is based on the following video tutorial:
+- [Deep Learning in C - Part 1 (Neural Network from Scratch)](https://www.youtube.com/watch?v=hL_n_GljC0I&t=1s)
+
 The framework features a custom matrix library, a modular computation graph system, and an example implementation for training an MNIST digit classifier.
 
 ## Features
